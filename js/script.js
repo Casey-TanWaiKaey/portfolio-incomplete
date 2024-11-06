@@ -1,68 +1,66 @@
+// Typed.js initialization
 var typed = new Typed(".typing", {
   strings: ["", "Ethical Hacker", "Cloud Security Expert"],
   typeSpeed: 100,
-  BackSpeed: 60,
+  backSpeed: 60,  // Fixed capitalization here
   loop: true,
 });
 
-// Aside
+// Navigation and Section Handling
 const nav = document.querySelector(".nav"),
   navList = nav.querySelectorAll("li"),
-  totalNavList = navList.length,
-  allSection = document.querySelectorAll(".section"),
-  totalSection = allSection.length;
+  allSection = document.querySelectorAll(".section");
 
-for (let i = 0; i < totalNavList; i++) {
+for (let i = 0; i < navList.length; i++) {
   const a = navList[i].querySelector("a");
   a.addEventListener("click", function () {
-    for (let k = 0; k < totalSection; k++) {
-      allSection[k].classList.remove("back-section");
+    // Remove "back-section" and "active" classes
+    allSection.forEach(section => section.classList.remove("back-section", "active"));
+    navList.forEach(navItem => navItem.querySelector("a").classList.remove("active"));
+
+    // Add "back-section" class to the previously active section
+    if (document.querySelector(".section.active")) {
+      document.querySelector(".section.active").classList.add("back-section");
     }
-    //Loop for removing active class
-    for (let j = 0; j < totalNavList; j++) {
-      if (navList[j].querySelector("a").classList.contains("active")) {
-        allSection[j].classList.add("back-section");
-      }
-      navList[j].querySelector("a").classList.remove("active");
-    }
-    //Adding active class
+
+    // Set the current clicked link as active and show the correct section
     this.classList.add("active");
-    showSection(this); //Function call
-    //Nav click event - Hiding the nav menu
+    showSection(this);
+
+    // Hide the nav menu for smaller screens
     if (window.innerWidth < 1200) {
       asideSectionTogglerBtn();
     }
   });
 }
+
 function showSection(element) {
-  //Loop for removing active class
-  for (let k = 0; k < totalSection; k++) {
-    allSection[k].classList.remove("active");
-  }
+  // Determine target section from href attribute
   const target = element.getAttribute("href").split("#")[1];
-  document.querySelector("#" + target).classList.add("active");
+  const targetSection = document.querySelector(`#${target}`);
+  if (targetSection) {
+    targetSection.classList.add("active");
+  }
 }
 
-//For Hire me section
+// "Hire Me" button
 document.querySelector(".hire-me").addEventListener("click", function () {
   showSection(this);
   updateNav(this);
 });
 
 function updateNav(element) {
-  for (let i = 0; i < totalNavList; i++) {
-    navList[i].querySelector("a").classList.remove("active");
-    const target = element.getAttribute("href").split("#")[1];
-    if (
-      target ===
-      navList[i].querySelector("a").getAttribute("href").split("#")[1]
-    ) {
-      navList[i].querySelector("a").classList.add("active");
+  const target = element.getAttribute("href").split("#")[1];
+  navList.forEach(navItem => {
+    const link = navItem.querySelector("a");
+    link.classList.remove("active");
+    if (link.getAttribute("href").split("#")[1] === target) {
+      link.classList.add("active");
     }
-  }
+  });
 }
 
-//For Nav Toggler Button
+// Nav Toggler Button
 const navTogglerBtn = document.querySelector(".nav-toggler"),
   aside = document.querySelector(".aside");
 navTogglerBtn.addEventListener("click", () => {
